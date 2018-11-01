@@ -1,9 +1,6 @@
 package main
 
-import (
-	"fmt"
-	"strings"
-)
+import "fmt"
 
 func main() {
 	/*  Basic channel
@@ -53,7 +50,8 @@ func main() {
 	*/
 
 	///////////////////////////////////////////////////////////////
-	/* Ranging Over a Channel */
+	/* Ranging Over a Channel
+
 	phrase := "There are the times that try men's souls.\n"
 
 	words := strings.Split(phrase, " ")
@@ -70,4 +68,46 @@ func main() {
 		fmt.Print(msg + " ")
 	}
 
+	*/
+
+	/////////////////////////////////////////////////////
+	/* Switching Between Channels */
+
+	msgCh := make(chan Message, 1)
+	errCh := make(chan FailedMessage, 1)
+
+	msg := Message{
+		To:      []string{"frodo@underhill,me"},
+		From:    "gandalf@whitecouncil.org",
+		Content: "Keep it secret, keep it safe.",
+	}
+
+	failedMessage := FailedMessage{
+		ErrorMessage:    "Message intercepted by black rider",
+		OriginalMessage: Message{},
+	}
+
+	msgCh <- msg
+	errCh <- failedMessage
+
+	select {
+	case receivedMsg := <-msgCh:
+		fmt.Println(receivedMsg)
+	case receivedMsg := <-errCh:
+		fmt.Println(receivedMsg)
+	default:
+		fmt.Println("No messages received")
+	}
+
+}
+
+type Message struct {
+	To      []string
+	From    string
+	Content string
+}
+
+type FailedMessage struct {
+	ErrorMessage    string
+	OriginalMessage Message
 }
