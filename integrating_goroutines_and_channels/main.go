@@ -90,6 +90,8 @@ func main() {
 
 }
 
+//////////////////////// Simulating Callback ///////////////////////////
+
 type PurchaseOrder struct {
 	Number int
 	Value  float64
@@ -101,6 +103,7 @@ func SavePO(po *PurchaseOrder, callback chan *PurchaseOrder) {
 	callback <- po
 }
 
+/////////////////// Simulating Event /////////////////
 type Button struct {
 	eventListeners map[string][]chan string
 }
