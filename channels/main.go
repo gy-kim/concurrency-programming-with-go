@@ -31,7 +31,7 @@ func main() {
 	*/
 
 	/////////////////////////////////////////////////////////
-	/* Closing Channels */
+	/* Closing Channels
 	phrase := "There are the times that try men's souls.\n"
 
 	words := strings.Split(phrase, " ")
@@ -49,5 +49,25 @@ func main() {
 	}
 
 	ch <- "Hello"
+
+	*/
+
+	///////////////////////////////////////////////////////////////
+	/* Ranging Over a Channel */
+	phrase := "There are the times that try men's souls.\n"
+
+	words := strings.Split(phrase, " ")
+
+	ch := make(chan string, len(words))
+
+	for _, word := range words {
+		ch <- word
+	}
+
+	close(ch)
+
+	for msg := range ch {
+		fmt.Print(msg + " ")
+	}
 
 }
