@@ -93,19 +93,49 @@ func main() {
 
 	*/
 
-	//////////////////////// Simulating Promises /////////////////////////
-	po := new(PurchaseOrder)
-	po.Value = 42.27
-	SavePO(po, false).Then(func(obj interface{}) error {
-		po := obj.(*PurchaseOrder)
-		fmt.Printf("Purchase Order saved with ID: %d\n", po.Number)
-		return nil
-	}, func(err error) {
-		fmt.Printf("Failed to save Purchase Order: " + err.Error() + "\n")
-	})
+	/*
+		//////////////////////// Simulating Promises /////////////////////////
+		po := new(PurchaseOrder)
+		po.Value = 42.27
+		SavePO(po, false).Then(func(obj interface{}) error {
+			po := obj.(*PurchaseOrder)
+			fmt.Printf("Purchase Order saved with ID: %d\n", po.Number)
+			return nil
+		}, func(err error) {
+			fmt.Printf("Failed to save Purchase Order: " + err.Error() + "\n")
+		})
 
-	fmt.Scanln()
+		fmt.Scanln()
 
+	*/
+
+	//////////////////////////// The Pipe and Filter Pattern //////////////////////////
+
+	ch := make(chan int)
+	go generate(ch)
+	for {
+		prime := <-ch
+		fmt.Println(prime)
+		ch1 := make(chan int)
+		go filter(ch, ch1, prime)
+		ch = ch1
+	}
+}
+
+//////////////////////////// The Pipe and Filter Pattern //////////////////////////
+func generate(ch chan int) {
+	for i := 2; ; i++ {
+		ch <- i
+	}
+}
+
+func filter(in, out chan int, prime int) {
+	for {
+		i := <-in
+		if i%prime != 0 {
+			out <- i
+		}
+	}
 }
 
 //////////////////////// Simulating Promises ///////////////////////////
